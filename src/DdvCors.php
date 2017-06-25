@@ -55,13 +55,13 @@ class DdvCors
     //标记请求方式
     $originMethod = strtoupper(empty($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD'])? 'GET' : $_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD']);
     if (!$originPass) {
-      throw new Exception("No origin is allowed", 'NO_ORIGIN_ALLOWED');
+      throw new DdvCors\Exception("No origin is allowed", 'NO_ORIGIN_ALLOWED');
     }
     if ($method!=='OPTIONS') {
       return true;
     }
     if (!in_array($originMethod, $methods)) {
-      throw new Exception("No method is allowed", 'NO_METHODS_ALLOWED');
+      throw new DdvCors\Exception("No method is allowed", 'NO_METHODS_ALLOWED');
     }
 
     //请求头
@@ -75,7 +75,7 @@ class DdvCors
       $t = $originHeaders[$i];
       $t = trim($t);
       if(!$self::checkHeader($t, $allowHeaders)){
-        throw new Exception('No '.$t.' header is allowed', 'NO_HEADER_ALLOWED');
+        throw new DdvCors\Exception('No '.$t.' header is allowed', 'NO_HEADER_ALLOWED');
       }
       $allowOriginHeaders[]=$t;
     }
