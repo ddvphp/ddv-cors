@@ -18,13 +18,16 @@ class DdvCors
    * @param    Array                    $config [description]
    * @return   [type]                           [通过是true, 失败false, 停止输出 null]
    */
-  public static function run($config)
+  public static function run($config = array())
   {
     $self = get_class();
     if (empty($_SERVER['HTTP_ORIGIN'])) {
       return false;
     }
-    $origins = is_array($config['origin']) ? $config['origin'] : array();
+    if (empty($config)||(!is_array($config))) {
+      throw new DdvCors\Exception('Config must be an array', 'CONFIG_MUST_BE_AN_ARRAY');
+    }
+    $origins = (!empty($config['origin']))&&is_array($config['origin']) ? $config['origin'] : array();
     //获取请求域名
     $origin = empty($_SERVER['HTTP_ORIGIN'])? '' : $_SERVER['HTTP_ORIGIN'];
     $originPass = false;
@@ -55,13 +58,13 @@ class DdvCors
     //标记请求方式
     $originMethod = strtoupper(empty($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD'])? 'GET' : $_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD']);
     if (!$originPass) {
-      throw new DdvCors\Exception("No origin is allowed", 'NO_ORIGIN_ALLOWED');
+      throw new DdvCors\Exception('No origin is allowed', 'NO_ORIGIN_ALLOWED');
     }
     if ($method!=='OPTIONS') {
       return true;
     }
     if (!in_array($originMethod, $methods)) {
-      throw new DdvCors\Exception("No method is allowed", 'NO_METHODS_ALLOWED');
+      throw new DdvCors\Exception('No method is allowed', 'NO_METHODS_ALLOWED');
     }
 
     //请求头
